@@ -7,6 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint"
+  },"lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",
