@@ -4,7 +4,7 @@ import React from 'react'
 const Hero = () => {
   return (
     <section className='relative'>
-        <div className='h-screen flex flex-col justify-center items-center gap-2'>
+        <div className='h-screen w-full flex flex-col justify-center items-center gap-2'>
 
             <div className='px-8 py-1 border-2 border-secondary rounded-full'>
                 <h2 className='body-semibold text-secondary'>
