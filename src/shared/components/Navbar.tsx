@@ -1,6 +1,6 @@
 "use client"
 
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/atoms/button'
 import { ArrowRight } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -25,7 +25,7 @@ const Navbar = () => {
 
   return (
     <nav className={'bg-white fixed right-0 left-0 top-0 z-10 transition-all duration-300 shadow-md shadow-[#007BFF40]'}>
-      <div className='mycontainer px-20 py-6 flex items-center justify-between'>
+      <div className='mycontainer flex items-center justify-between'>
         <div className='w-40 h-11'>
           <Image src={"/Logo.webp"} alt='LogoNav' width={500} height={500}/>
         </div>
@@ -66,10 +66,13 @@ const Navbar = () => {
           <Link href={"/login"}>
             <Button variant={"back"} size={"default"}>Masuk</Button>
           </Link>
-          <Button variant={"nav"} size={"default"} className='gap-2'>
-            Daftar Gratis 
-            <ArrowRight/>
-          </Button>
+          <Link href={"/beranda"}>
+            <Button variant={"nav"} size={"default"} className='gap-2'>
+              Daftar Gratis 
+              <ArrowRight/>
+            </Button>
+          </Link>
+          
         </div>
       </div>
     </nav>
