@@ -1,32 +1,61 @@
-// lib/axios.ts
 import axios, { AxiosError, InternalAxiosRequestConfig, AxiosResponse } from 'axios'
 
-// Create axios instance
 const api = axios.create({
-  baseURL: "https://remissly-crumbier-michelle.ngrok-free.dev/",
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
   },
-  withCredentials: true, // CRITICAL: Send cookies with requests (for refresh token)
+  withCredentials: true, 
 })
 
-// Access token storage (in memory, not localStorage for security)
 let accessToken: string | null = null
 
 export const setAccessToken = (token: string | null) => {
   accessToken = token
-  console.log('🔑 Access token updated:', token ? 'Set' : 'Cleared')
+  console.log('Access token updated:', token ? 'Set' : 'Cleared')
 }
 
 export const getAccessToken = () => accessToken
 
-// Flag to prevent multiple refresh requests
+const clearAuthAndRedirect = (reason: string = 'expired') => {
+  setAccessToken(null)
+  
+  // // Clear localStorage
+  // if (typeof window !== 'undefined') {
+  //   localStorage.removeItem('user')
+  //   localStorage.removeItem('access_token')
+  //   // Clear semua data auth lainnya jika ada
+  //   Object.keys(localStorage).forEach(key => {
+  //     if (key.startsWith('auth_') || key.startsWith('user_')) {
+  //       localStorage.removeItem(key)
+  //     }
+  //   })
+  // }
+  
+  if (typeof window !== 'undefined') {
+    sessionStorage.clear()
+  }
+  
+  if (typeof document !== 'undefined') {
+    document.cookie.split(';').forEach(cookie => {
+      const name = cookie.split('=')[0].trim()
+      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`
+    })
+  }
+  
+  if (typeof window !== 'undefined') {
+    window.location.href = `/login?session=${reason}`
+  }
+}
+
+interface QueueItem {
+  resolve: (value: string | null) => void
+  reject: (reason: Error) => void
+}
+
 let isRefreshing = false
-let failedQueue: Array<{
-  resolve: (value?: any) => void
-  reject: (reason?: any) => void
-}> = []
+let failedQueue: QueueItem[] = []
 
 const processQueue = (error: Error | null, token: string | null = null) => {
   failedQueue.forEach((prom) => {
@@ -40,7 +69,12 @@ const processQueue = (error: Error | null, token: string | null = null) => {
   failedQueue = []
 }
 
-// Request interceptor - Add access token to requests
+interface RefreshTokenResponse {
+  data: {
+    access_token: string
+  }
+}
+
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const token = getAccessToken()
@@ -49,7 +83,7 @@ api.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`
     }
 
-    console.log('📤 API Request:', {
+    console.log('API Request:', {
       method: config.method?.toUpperCase(),
       url: config.url,
       hasToken: !!token,
@@ -58,15 +92,14 @@ api.interceptors.request.use(
     return config
   },
   (error: AxiosError) => {
-    console.error('❌ Request Error:', error)
+    console.error('Request Error:', error)
     return Promise.reject(error)
   }
 )
 
-// Response interceptor - Handle 401 and auto-refresh
 api.interceptors.response.use(
   (response: AxiosResponse) => {
-    console.log('📥 API Response:', {
+    console.log('API Response:', {
       status: response.status,
       url: response.config.url,
     })
@@ -77,25 +110,23 @@ api.interceptors.response.use(
       _retry?: boolean
     }
 
-    console.error('❌ API Error:', {
+    console.error('API Error:', {
       status: error.response?.status,
       url: originalRequest?.url,
     })
 
-    // If error is 401 and we haven't retried yet
     if (error.response?.status === 401 && !originalRequest._retry) {
       if (isRefreshing) {
-        // Wait for refresh to complete
-        return new Promise((resolve, reject) => {
+        return new Promise<string | null>((resolve, reject) => {
           failedQueue.push({ resolve, reject })
         })
           .then((token) => {
-            if (originalRequest.headers) {
+            if (originalRequest.headers && token) {
               originalRequest.headers.Authorization = `Bearer ${token}`
             }
             return api(originalRequest)
           })
-          .catch((err) => {
+          .catch((err: Error) => {
             return Promise.reject(err)
           })
       }
@@ -104,52 +135,47 @@ api.interceptors.response.use(
       isRefreshing = true
 
       try {
-        console.log('🔄 Refreshing access token...')
+        console.log('Refreshing access token...')
 
-        // Call refresh endpoint
-        const response = await axios.post(
+        const response = await axios.post<RefreshTokenResponse>(
           `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`,
           {},
           {
-            withCredentials: true, // Send refresh token cookie
+            withCredentials: true, 
           }
         )
 
         const { access_token } = response.data.data
 
-        console.log('✅ Access token refreshed successfully')
+        console.log('Access token refreshed successfully')
 
-        // Update access token
         setAccessToken(access_token)
 
-        // Update session
-        await fetch('/api/auth/session', {
-          method: 'PATCH',
+        await fetch('/api/auth/refresh', {
+          method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ access_token }),
+        }).catch(() => {
+          console.log('Session API route not available')
         })
 
-        // Process queued requests
         processQueue(null, access_token)
 
-        // Retry original request
         if (originalRequest.headers) {
           originalRequest.headers.Authorization = `Bearer ${access_token}`
         }
 
         return api(originalRequest)
       } catch (refreshError) {
-        console.error('❌ Token refresh failed:', refreshError)
+        console.error('Token refresh failed:', refreshError)
 
-        processQueue(refreshError as Error, null)
+        const error = refreshError instanceof Error 
+          ? refreshError 
+          : new Error('Unknown error occurred during token refresh')
 
-        // Clear tokens and redirect to login
-        setAccessToken(null)
-        await fetch('/api/auth/session', { method: 'DELETE' })
+        processQueue(error, null)
 
-        if (typeof window !== 'undefined') {
-          window.location.href = '/login?session=expired'
-        }
+        clearAuthAndRedirect('expired')
 
         return Promise.reject(refreshError)
       } finally {
@@ -157,17 +183,20 @@ api.interceptors.response.use(
       }
     }
 
-    // Handle other errors
     if (error.response?.status === 403) {
-      console.error('🚫 Access forbidden')
+      console.error('Access forbidden')
     }
 
     if (error.response?.status === 500) {
-      console.error('💥 Server error')
+      console.error('Server error')
     }
 
     return Promise.reject(error)
   }
 )
+
+export const clearAuth = () => {
+  clearAuthAndRedirect('logout')
+}
 
 export default api
