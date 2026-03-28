@@ -18,7 +18,7 @@ const PUBLIC_ONLY_ROUTES = [
   '/landing',
 ]
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   let isLoggedIn = false
@@ -33,7 +33,7 @@ export async function middleware(request: NextRequest) {
     
     isLoggedIn = session.isLoggedIn && !!session.user
   } catch (error) {
-    console.error('Middleware session check error:', error)
+    console.error('proxy session check error:', error)
     isLoggedIn = false
   }
 

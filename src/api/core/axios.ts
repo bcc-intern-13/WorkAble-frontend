@@ -7,7 +7,7 @@ const api = axios.create({
     'Content-Type': 'application/json',
     'ngrok-skip-browser-warning': 'true',
   },
-  withCredentials: true, 
+  withCredentials: false, 
 })
 
 let accessToken: string | null = null

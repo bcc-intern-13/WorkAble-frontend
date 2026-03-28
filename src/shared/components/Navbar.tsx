@@ -63,10 +63,10 @@ const Navbar = () => {
         </div>
 
         <div className='flex gap-2'>
-          <Link href={"/onboarding"}>
+          <Link href={"/login"}>
             <Button variant={"login"} size={"default"}>Masuk</Button>
           </Link>
-          <Link href={"/beranda"}>
+          <Link href={"/register"}>
             <Button variant={"nav"} size={"default"} className='gap-2'>
               Daftar Gratis 
               <ArrowRight/>
