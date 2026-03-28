@@ -64,7 +64,7 @@ const Navbar = () => {
 
         <div className='flex gap-2'>
           <Link href={"/onboarding"}>
-            <Button variant={"back"} size={"default"}>Masuk</Button>
+            <Button variant={"login"} size={"default"}>Masuk</Button>
           </Link>
           <Link href={"/beranda"}>
             <Button variant={"nav"} size={"default"} className='gap-2'>

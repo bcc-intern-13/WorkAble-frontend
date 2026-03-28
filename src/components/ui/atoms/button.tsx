@@ -12,14 +12,18 @@ const buttonVariants = cva(
         nav: "bg-secondary border border-secondary text-white font-inter hover:bg-white hover:text-secondary ",
         default:
           "bg-secondary border border-secondary text-white font-medium hover:bg-white hover:text-secondary ",
+        lanjut:
+          "bg-secondary border border-secondary text-white font-medium hover:bg-bl-06 rounded-xl hover:scale-100 ",
         back:
+          "bg-white border border-gray-400 text-gray-400 font-medium hover:bg-gray-100 rounded-xl hover:scale-100",
+        login:
           "bg-white border border-secondary text-secondary font-medium hover:bg-secondary hover:text-white ",
         black:
           "bg-white border-2 border-black text-black font-medium hover:bg-black hover:text-white ",
       },
       size: {
         default: "h-10 px-4 py-2",
-        lg: "",
+        lg: "h-14 w-full text-center",
       },
     },
     defaultVariants: {

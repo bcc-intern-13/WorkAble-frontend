@@ -3,7 +3,7 @@ import React from 'react'
 
 const page = () => {
   return (
-    <section>
+    <section className='bg-bl-01 min-h-screen'>
         <OnboardingContainer/>
     </section>
   )
