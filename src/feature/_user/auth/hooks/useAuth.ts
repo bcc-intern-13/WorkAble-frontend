@@ -16,6 +16,7 @@ export const useAuth = () => {
     setError(null)
     try {
       const response = await authService.login(payload)
+      console.log(response)
       
       const accessToken = response.data?.access_token || response.access_token;
       const userData = response.data?.user || response.user;
