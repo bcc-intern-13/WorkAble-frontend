@@ -25,7 +25,6 @@ export const useAuth = () => {
       setAccessToken(accessToken)
       setUser(userData);
       Cookies.set('access_token', accessToken, { expires: 1, path: '/' });
-      Cookies.set('refresh_token', response.data?.refresh_token || response.refresh_token, { expires: 7, path: '/' });
 
       router.push('/beranda')
     } catch (err) {
@@ -52,5 +51,24 @@ export const useAuth = () => {
     }
   }
 
-  return { user, loading, error, login, register }
+  const logout = async () => {
+    setLoading(true)
+    setError(null)
+    try {
+      await authService.logout()
+      setAccessToken(null)
+      setUser(null)
+      Cookies.remove('access_token')
+      Cookies.remove('refresh_token')
+      router.push('/login')
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Logout gagal';
+      setError(errorMessage);
+      throw err;
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return { user, loading, error, login, register, logout }
 }

@@ -39,9 +39,9 @@ export function proxy(request: NextRequest) {
     return NextResponse.redirect(loginUrl)
   }
 
-  if (isLoggedIn && isPublicOnlyRoute) {
-    return NextResponse.redirect(new URL('/beranda', request.url))
-  }
+  // if (isLoggedIn && isPublicOnlyRoute) {
+  //   return NextResponse.redirect(new URL('/beranda', request.url))
+  // }
 
   return NextResponse.next()
 }

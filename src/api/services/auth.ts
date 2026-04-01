@@ -12,10 +12,6 @@ export const authService = {
     const response = await api.post('/auth/register', payload)
     return response.data
   },
-  verify: async (token: string) => {
-    const response = await api.get(`/auth/verify?token=${token}`);
-    return response.data;
-  },
   logout: async () => {
     const response = await api.post('/auth/logout')
     return response.data
@@ -23,7 +19,7 @@ export const authService = {
   isAuthenticated: () => {
     const token = getAccessToken()
     return !!token
-  }
+  },
   // getProfile: async () => {
   //   const response = await api.get('/auth/me')
   //   return response.data
