@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { authService } from "@/api/services/auth";
 import { LoginPayload, RegisterPayload, User } from "@/shared/types/auth";
 import { setAccessToken } from "@/api/core/axios";
+import Cookies from 'js-cookie';
 
 export const useAuth = () => {
   const router = useRouter()
@@ -10,11 +11,12 @@ export const useAuth = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const login = async (payload: LoginPayload, redirectPath: string = '/beranda') => {
+  const login = async (payload: LoginPayload) => {
     setLoading(true)
     setError(null)
     try {
       const response = await authService.login(payload)
+      console.log(response)
       
       const accessToken = response.data?.access_token || response.access_token;
       const userData = response.data?.user || response.user;
@@ -23,9 +25,10 @@ export const useAuth = () => {
 
       setAccessToken(accessToken)
       setUser(userData);
+      Cookies.set('access_token', accessToken, { expires: 1, path: '/' });
+      Cookies.set('refresh_token', response.data?.refresh_token || response.refresh_token, { expires: 7, path: '/' });
 
-      router.push(redirectPath)
-      router.refresh()
+      router.push('/beranda')
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Login gagal';
       setError(errorMessage);

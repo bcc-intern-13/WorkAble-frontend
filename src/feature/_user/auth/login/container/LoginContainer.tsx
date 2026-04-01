@@ -45,8 +45,7 @@ export default function LoginContainer() {
     setSessionExpired(false)
 
     try {
-      const redirectPath = searchParams.get('from') || '/beranda'
-      await login(data, redirectPath)
+      await login(data)
 
       showToast({
         type: 'success',
