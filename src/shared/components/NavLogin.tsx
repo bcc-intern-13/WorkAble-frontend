@@ -124,9 +124,6 @@ const NavLogin = () => {
                             .
                         </div>
                         <div className='pr-8'>
-                            <h4 className='text-secondary font-semibold text-base'>
-                                SMART PROFILE
-                            </h4>
                             <p className='font-semibold text-base'>
                                 Username
                             </p>

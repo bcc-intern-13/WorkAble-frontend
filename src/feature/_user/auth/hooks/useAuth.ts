@@ -1,33 +1,34 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { authService, } from "@/api/services/auth";
+import { authService } from "@/api/services/auth";
 import { LoginPayload, RegisterPayload, User } from "@/shared/types/auth";
 import { setAccessToken } from "@/api/core/axios";
 
 export const useAuth = () => {
   const router = useRouter()
-  const [user, setUser] = useState<User | null>(null)
-  const [Loading, setLoading] = useState(false)
+  const [user, setUser] = useState<User | null>(null) 
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const login = async (payload: LoginPayload) => {
+  const login = async (payload: LoginPayload, redirectPath: string = '/beranda') => {
     setLoading(true)
     setError(null)
     try {
       const response = await authService.login(payload)
+      
+      const accessToken = response.data?.access_token || response.access_token;
+      const userData = response.data?.user || response.user;
 
-      if (response.error || !response.data) {
-        const errorMsg = response.message || "Login failed";
-        throw new Error(errorMsg);
-      }
+      if (!accessToken) throw new Error("Terjadi kesalahan, Token tidak ditemukan");
 
-      setAccessToken(response.access_token)
+      setAccessToken(accessToken)
+      setUser(userData);
 
-      const userData = response.data.user;
-      setUser(userData || null);
-    } catch (error) {
-      setUser(null)
-      throw error
+      router.push(redirectPath)
+      router.refresh()
+    } catch (err: any) {
+      setError(err.message || 'Login gagal')
+      throw err
     } finally {
       setLoading(false)
     }
@@ -37,47 +38,15 @@ export const useAuth = () => {
     setLoading(true)
     setError(null)
     try {
-      const response = await authService.register(payload)
-
-      if (response.error || !response.data) {
-        const errorMsg = response.message || "Register failed";
-        throw new Error(errorMsg);
-      }
-
-      setAccessToken(response.access_token)
-
-      const userData = response.data.user;
-      setUser(userData || null);
-    } catch (error) {
-      setUser(null)
-      throw error
+      await authService.register(payload)
+      router.push('/verify')
+    } catch (err: any) {
+      setError(err.message || 'Register gagal')
+      throw err
     } finally {
       setLoading(false)
     }
   }
 
-  const logout = async () => {
-    setLoading(true)
-    setError(null)
-    try {
-      await authService.logout()
-      setAccessToken(null)
-      setUser(null)
-      router.push('/login')
-    } catch (error) {
-      setUser(null)
-      throw error
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  return {
-    user,
-    Loading,
-    error,
-    login,
-    register,
-    logout
-  }
+  return { user, loading, error, login, register }
 }
