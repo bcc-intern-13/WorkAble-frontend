@@ -17,25 +17,16 @@ import { loginSchema, type LoginFormData } from '@/lib/validations/auth'
 import { authService } from '@/api/services/auth'
 import { setAccessToken } from '@/api/core/axios'
 import { useToast } from '@/shared/hooks/useToast'
+import { useAuth } from '@/feature/_user/auth/hooks/useAuth'
 
 export default function LoginContainer() {
+  const { login } = useAuth();
   const router = useRouter()
   const searchParams = useSearchParams()
   const [showPassword, setShowPassword] = useState(false)
   const [serverError, setServerError] = useState<string | null>(null)
   const [sessionExpired, setSessionExpired] = useState(false)
   const { showToast } = useToast();
-
-  useEffect(() => {
-    const sessionParam = searchParams.get('session')
-    
-    if (sessionParam === 'expired') {
-      setSessionExpired(true)
-      setServerError('Sesi Anda telah berakhir. Silakan login kembali.')
-    } else if (sessionParam === 'logout') {
-      setServerError('Anda telah berhasil logout.')
-    }
-  }, [searchParams])
 
   const {
     register,
@@ -54,36 +45,14 @@ export default function LoginContainer() {
     setSessionExpired(false)
 
     try {
-      const response = await authService.login(data)
+      const redirectPath = searchParams.get('from') || '/beranda'
+      await login(data, redirectPath)
 
       showToast({
         type: 'success',
         title: 'Login berhasil',
         message: 'Selamat datang kembali di WorkAble!',
       })
-
-      setAccessToken(response.data.access_token)
-
-      const sessionResponse = await fetch('/api/auth/session', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({
-          user: response.data.user,
-          access_token: response.data.access_token,
-        }),
-      })
-
-      if (!sessionResponse.ok) {
-        const errorData = await sessionResponse.json()
-        throw new Error(errorData.error || 'Gagal membuat session')
-      }
-
-      const redirectPath = searchParams.get('from') || '/beranda'
-      
-      router.push(redirectPath)
-      router.refresh() // Force refresh to update auth state
-
     } catch (error) {
       if (error instanceof Error) {
         setServerError(error.message)

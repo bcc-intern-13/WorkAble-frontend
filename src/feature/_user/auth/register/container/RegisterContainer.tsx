@@ -18,9 +18,11 @@ import { RegisterApiSchema, registerSchema, type RegisterFormData } from '@/lib/
 import { authService } from '@/api/services/auth'
 import { setAccessToken } from '@/api/core/axios'
 import { useToast } from '@/shared/hooks/useToast'
+import { useAuth } from '@/feature/_user/auth/hooks/useAuth'
 
 
 export default function RegisterContainer() {
+  const { register: registerAuth } = useAuth();
   const router = useRouter()
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
@@ -58,18 +60,11 @@ export default function RegisterContainer() {
   }
 
   const onSubmit = async (data: RegisterFormData) => {
-    const payload = mapToRegisterPayload(data)
-    
     setServerError(null)
 
     try {
-      console.log('Attempting registration:', {
-        username: payload.username,
-        email: payload.email,
-        password: payload.password,
-      })
-
-      const response = await authService.register(payload)
+      const payload = mapToRegisterPayload(data)
+      await registerAuth(payload)
       router.push('/verify')
     } catch (error) {
       if (error instanceof Error) {
