@@ -48,10 +48,10 @@ export function Step6() {
       </div>
       <div>
         <h2 className="h2-bold text-[#252525] mb-2">
-          Pendidikan terakhirmu?
+          Tipe pekerjaan seperti apa yang kamu inginkan?
         </h2>
         <p className="text-[#757575] body-regular whitespace-normal">
-          Ini membantu mencocokkan kamu dengan lowongan yang sesuai kualifikasi.
+          Ini akan menjadi filter utama saat mencari lowongan.
         </p>
       </div>
 

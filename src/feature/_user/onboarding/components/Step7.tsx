@@ -49,10 +49,10 @@ export function Step7() {
       </div>
       <div>
         <h2 className="h2-bold text-[#252525] mb-2">
-          Pendidikan terakhirmu?
+          Apa status kamu saat ini?
         </h2>
         <p className="text-[#757575] body-regular whitespace-normal">
-          Ini membantu mencocokkan kamu dengan lowongan yang sesuai kualifikasi.
+          Ini membantu kami memahami kebutuhan dan urgensi pencarianmu.
         </p>
       </div>
 

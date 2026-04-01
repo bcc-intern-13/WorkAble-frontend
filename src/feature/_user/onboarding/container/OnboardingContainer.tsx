@@ -9,6 +9,7 @@ import { Step4 } from '../components/Step4'
 import { Step5 } from '../components/Step5'
 import { Step6 } from '../components/Step6'
 import { Step7 } from '../components/Step7'
+import { Step8 } from '../components/Step8'
 
 export const TOTAL_STEPS = 10
 
@@ -33,6 +34,8 @@ export default function OnboardingContainer() {
         return <Step6/>
       case 7:
         return <Step7/>
+      case 8:
+        return <Step8/>
       default:
         return <Step1 />
     }

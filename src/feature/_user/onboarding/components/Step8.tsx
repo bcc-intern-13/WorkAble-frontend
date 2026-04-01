@@ -2,25 +2,23 @@
 
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { step5Schema, type Step5Data } from '@/lib/validations/onboarding'
+import { step8Schema, type Step8Data } from '@/lib/validations/onboarding'
 import { useOnboardingStore } from '@/lib/stores/onboarding'
 import { Button } from '@/components/ui/atoms/button'
 import { FormField } from '@/components/ui/molecules/form'
 import { number } from 'zod'
 
 
-const BIDANG_OPTIONS = [
-  'Teknologi & IT',
-  'Administrasi & Keuangan',
-  'Kesehatan',
-  'Desain & Kreatif',
-  'Pendidikan',
-  'Perdagangan & Ritel',
-  'Lainnya',
+const KOMUNIKASI_OPTIONS = [
+  'Teks atau Chat',
+  'Video Call',
+  'Telepon Suara',
+  'Tatap Muka',
+  'Video Rekaman',
 ]
 
 
-export function Step5() {
+export function Step8() {
   const { data, updateData, currentStep, nextStep, prevStep } = useOnboardingStore()
 
   const {
@@ -28,19 +26,19 @@ export function Step5() {
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm<Step5Data>({
-    resolver: zodResolver(step5Schema),
+  } = useForm<Step8Data>({
+    resolver: zodResolver(step8Schema),
     mode: "onChange",
     defaultValues: {
-      bidangKerja: data.bidangKerja || '',
+      caraKomunikasi: data.caraKomunikasi || '',
     },
   })
 
-  const selectedBidang = watch('bidangKerja')
+  const selectedStatus = watch('caraKomunikasi')
 
-  const isValid = !!selectedBidang
+  const isValid = !!selectedStatus
 
-  const onSubmit = (formData: Step5Data) => {
+  const onSubmit = (formData: Step8Data) => {
     updateData(formData)
     nextStep()
   }
@@ -52,28 +50,28 @@ export function Step5() {
       </div>
       <div>
         <h2 className="h2-bold text-[#252525] mb-2">
-          Bidang kerja apa yang paling kamu minati?
+          Cara komunikasi apa yang paling nyaman buatmu?
         </h2>
         <p className="text-[#757575] body-regular whitespace-normal">
-          Pilih satu bidang yang paling sesuai dengan minat dan keahlianmu.
+          Ini akan digunakan untuk menentukan format wawancara yang sesuai.
         </p>
       </div>
 
-      <FormField error={errors.bidangKerja?.message}>
-        <div className="grid grid-cols-2 gap-3">
-          {BIDANG_OPTIONS.map((option) => (
+      <FormField error={errors.caraKomunikasi?.message}>
+        <div className="grid gap-3">
+          {KOMUNIKASI_OPTIONS.map((option) => (
             <button
               key={option}
               type="button"
               onClick={() =>
                 setValue(
-                    'bidangKerja',
-                    selectedBidang === option ? '' : option,
+                    'caraKomunikasi',
+                    selectedStatus === option ? '' : option,
                     { shouldValidate: true }
                 )
                 }
               className={`p-4 rounded-lg border-2 transition-all font-medium ${
-                selectedBidang === option
+                selectedStatus === option
                   ? 'border-primary bg-primary/5 text-primary'
                   : 'border-gray-200 hover:border-gray-300 text-gray-700'
               }`}
