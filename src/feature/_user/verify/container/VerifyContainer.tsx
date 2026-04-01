@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import axios from "axios";
 import { setAccessToken } from "@/api/core/axios";
 import { useToast } from "@/shared/hooks/useToast";
+import { authService } from "@/api/services/auth";
 
 export default function VerifyPage() {
   const searchParams = useSearchParams();
@@ -15,18 +16,18 @@ export default function VerifyPage() {
 
   useEffect(() => {
     if (!token) {
-      setStatus("error");
+      setStatus("loading");
       return;
     }
 
     const verifyEmail = async () => {
       try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/auth/verify?token=${token}`);
+        const response = await authService.verify(token);
         console.log('Registration successful:', response)
         
         if (response.data.success) {
             setStatus("success");
-            setAccessToken(response.data.access_token)
+            setAccessToken(token)
             
             console.log('Registration successful:', response)
 
@@ -57,7 +58,7 @@ export default function VerifyPage() {
         {status === "loading" && (
           <div className="space-y-4">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="text-secondary-bl-07 font-bold">Sedang memverifikasi email...</p>
+            <p className="text-secondary-bl-07 font-bold">Sedang memverifikasi email..., Cek Email-mu</p>
           </div>
         )}
 

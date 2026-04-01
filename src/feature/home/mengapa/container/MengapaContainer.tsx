@@ -3,7 +3,7 @@ import MengapaCard from '../components/MengapaCard'
 
 const MengapaContainer = () => {
   return (
-    <section className='w-full flex items-center justify-center'>
+    <section className='w-full flex items-center justify-center px-4'>
         <div className='max-w-lg md:max-w-6xl flex flex-col justify-center items-center text-center gap-8'>
             <div className='space-y-2'>
                 <h3 className='body-semibold text-secondary'>
