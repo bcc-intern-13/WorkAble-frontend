@@ -27,7 +27,7 @@ export const useOnboardingStore = create<OnboardingStore>()(
       
       nextStep: () => {
         const { currentStep } = get()
-        if (currentStep < 6) {
+        if (currentStep < 10) {
           set({ currentStep: currentStep + 1 })
         }
       },
@@ -59,6 +59,14 @@ export const useOnboardingStore = create<OnboardingStore>()(
             return !!data.age
           case 3:
             return !!data.city
+          case 4:
+            return !!data.pendidikanTerakhir
+          case 5:
+            return !!data.bidangKerja
+          case 6:
+            return !!data.tipePekerjaan
+          case 7:
+            return !!data.statusKerja
           default:
             return false
         }
@@ -66,7 +74,7 @@ export const useOnboardingStore = create<OnboardingStore>()(
       
       getProgress: () => {
         const { currentStep } = get()
-        return (currentStep / 6) * 100
+        return (currentStep / 10) * 100
       },
     }),
     {
