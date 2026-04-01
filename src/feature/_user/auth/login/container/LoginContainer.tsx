@@ -16,6 +16,7 @@ import { FormField } from '@/components/ui/molecules/form'
 import { loginSchema, type LoginFormData } from '@/lib/validations/auth'
 import { authService } from '@/api/services/auth'
 import { setAccessToken } from '@/api/core/axios'
+import { useToast } from '@/shared/hooks/useToast'
 
 export default function LoginContainer() {
   const router = useRouter()
@@ -23,6 +24,7 @@ export default function LoginContainer() {
   const [showPassword, setShowPassword] = useState(false)
   const [serverError, setServerError] = useState<string | null>(null)
   const [sessionExpired, setSessionExpired] = useState(false)
+  const { showToast } = useToast();
 
   useEffect(() => {
     const sessionParam = searchParams.get('session')
@@ -54,6 +56,12 @@ export default function LoginContainer() {
     try {
       const response = await authService.login(data)
 
+      showToast({
+        type: 'success',
+        title: 'Login berhasil',
+        message: 'Selamat datang kembali di WorkAble!',
+      })
+
       setAccessToken(response.data.access_token)
 
       const sessionResponse = await fetch('/api/auth/session', {
@@ -78,7 +86,12 @@ export default function LoginContainer() {
 
     } catch (error) {
       if (error instanceof Error) {
-        alert(error.message)
+        setServerError(error.message)
+        showToast({
+          type: 'error',
+          title: 'Login gagal',
+          message: error.message,
+        })
       }
     }
   }

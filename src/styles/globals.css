@@ -269,7 +269,7 @@
 }
 
 @layer components {
-  .mycontainer { @apply container mx-auto max-w-7xl w-full md:px-12 lg:px-16 xl:px-18 py-6;}
+  .mycontainer { @apply container mx-auto max-w-7xl w-full md:px-12 lg:px-16 xl:px-18 py-6 px-4;}
 
   .h1-regular { @apply text-[56px] leading-[72px] font-normal; }
   .h1-semibold { @apply text-[56px] leading-[72px] font-semibold; }

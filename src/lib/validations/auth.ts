@@ -11,6 +11,13 @@ export const loginSchema = z.object({
     .min(8, 'Password minimal 8 karakter'),
 })
 
+export const RegisterApiSchema = z.object({
+  name: z.string(),
+  username: z.string(),
+  email: z.string(),
+  password: z.string(),
+})
+
 export const registerSchema = z
   .object({
     namaDepan: z
@@ -36,8 +43,8 @@ export const registerSchema = z
       .min(1, 'Password wajib diisi')
       .min(8, 'Password minimal 8 karakter')
       .regex(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-        'Password harus mengandung huruf besar, huruf kecil, dan angka'
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!#%*?&])/,
+        'Password harus mengandung huruf besar, huruf kecil, angka, dan simbol'
       ),
     confirmPassword: z.string().min(1, 'Konfirmasi password wajib diisi'),
     acceptTerms: z
@@ -53,3 +60,4 @@ export const registerSchema = z
 
 export type LoginFormData = z.infer<typeof loginSchema>
 export type RegisterFormData = z.infer<typeof registerSchema>
+export type RegisterApiSchema = z.infer<typeof RegisterApiSchema>

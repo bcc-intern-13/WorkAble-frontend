@@ -14,9 +14,10 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/atoms/tabs'
 import { FormField } from '@/components/ui/molecules/form'
 import { Checkbox } from '@/components/ui/atoms/checkbox'
 
-import { registerSchema, type RegisterFormData } from '@/lib/validations/auth'
+import { RegisterApiSchema, registerSchema, type RegisterFormData } from '@/lib/validations/auth'
 import { authService } from '@/api/services/auth'
 import { setAccessToken } from '@/api/core/axios'
+import { useToast } from '@/shared/hooks/useToast'
 
 
 export default function RegisterContainer() {
@@ -24,6 +25,7 @@ export default function RegisterContainer() {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [serverError, setServerError] = useState<string | null>(null)
+  const { showToast } = useToast();
 
   const {
     register,
@@ -44,36 +46,39 @@ export default function RegisterContainer() {
     },
   })
 
+  const mapToRegisterPayload = (
+    data: RegisterFormData
+  ): RegisterApiSchema => {
+    return {
+      name: `${data.namaDepan} ${data.namaBelakang}`,
+      username: data.namaDepan,
+      email: data.email,
+      password: data.password,
+    }
+  }
+
   const onSubmit = async (data: RegisterFormData) => {
+    const payload = mapToRegisterPayload(data)
+    
     setServerError(null)
 
     try {
       console.log('Attempting registration:', {
-        namaDepan: data.namaDepan,
-        namaBelakang: data.namaBelakang,
-        email: data.email,
+        username: payload.username,
+        email: payload.email,
+        password: payload.password,
       })
 
-      const response = await authService.register(data)
-
-      console.log('Registration successful:', response)
-
-      setAccessToken(response.data.access_token)
-
-      await fetch('/api/auth/session', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({
-          user: response.data.user,
-          access_token: response.data.access_token,
-        }),
-      })
-
-      router.push('/onboarding')
+      const response = await authService.register(payload)
+      router.push('/verify')
     } catch (error) {
       if (error instanceof Error) {
-        alert(error.message)
+        setServerError(error.message)
+        showToast({
+          type: 'error',
+          title: 'Registrasi gagal',
+          message: error.message,
+        })
       }
     }
   }

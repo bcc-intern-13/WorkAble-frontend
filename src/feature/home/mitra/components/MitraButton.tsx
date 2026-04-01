@@ -3,7 +3,7 @@ import React from 'react'
 
 const MitraButton = () => {
   return (
-    <Button variant={'back'} size={'default'}>Daftar Sekarang - Gratis</Button>
+    <Button variant={'login'} size={'default'}>Daftar Sekarang - Gratis</Button>
   )
 }
 

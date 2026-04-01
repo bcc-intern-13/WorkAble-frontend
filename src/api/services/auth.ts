@@ -1,101 +1,90 @@
-import api, { setAccessToken, getAccessToken } from '../core/axios'
+import api, { getAccessToken } from '../core/axios'
+import { RegisterApiSchema } from '@/lib/validations/auth'
 import { LoginFormData } from '@/lib/validations/auth'
-import { handleError } from './errors'
-import { RegisterFormData } from '@/lib/validations/auth'
-
-export interface User {
-  id: string
-  email: string
-}
-
-export interface RegisterResponse{
-  data: {
-    id: string
-    email: string
-    avatar_url: string
-    is_verified: boolean
-    created_at: string
-    updated_at: string
-  }
-  message: string
-  success: true
-}
-
-export interface LoginResponse {
-  data: {
-    access_token: string
-    refresh_token: string
-    user: User
-  }
-  message: string
-  success: true
-}
-
-export interface ErrorResponse {
-  success: false
-  error: {
-    type: string
-    message: string
-    detail: string
-    status: number
-  }
-}
-
-export interface LoginPayload {
-  email: string
-  password: string
-}
+import { LoginPayload } from '@/shared/types/auth'
 
 export const authService = {
-  async login(credentials: LoginFormData): Promise<LoginResponse> {
-    try {
-      const response = await api.post<LoginResponse>('/auth/login', credentials)
-      setAccessToken(response.data.data.access_token)
-      return response.data
-    } catch (error) {
-      console.error('Login failed:', error)
-      throw handleError(error)
-    }
+  login: async (payload: LoginPayload) => {
+    const response = await api.post('/auth/login', payload)
+    return response.data
   },
-
-  
-  async register(data: RegisterFormData): Promise<LoginResponse> {
-    try {
-      const response = await api.post<LoginResponse>('/auth/register', data)
-      setAccessToken(response.data.data.access_token)
-      return response.data
-    } catch (error) {
-      console.error('Registration failed:', error)
-      throw handleError(error)
-    }
+  register: async (payload: RegisterApiSchema) => {
+    const response = await api.post('/auth/register', payload)
+    return response.data
   },
-  
-  async logout(): Promise<void> {
-    try {
-      await api.post('/auth/logout')
-      setAccessToken(null)
-    } catch (error) {
-      console.error('Logout error:', error)
-      setAccessToken(null)
-      throw handleError(error)
-    }
+  verify: async (payload: RegisterApiSchema) => {
+    const response = await api.post('/auth/verify', payload)
+    return response.data
   },
-
-  async getCurrentUser(): Promise<User> {
-    try {
-      const response = await api.get<{ success: true; data: User }>('/auth/me')
-      console.log('User fetched:', response.data.data.email)
-
-      return response.data.data
-    } catch (error) {
-      console.error('Fetch user failed:', error)
-      throw handleError(error)
-    }
+  logout: async () => {
+    const response = await api.post('/auth/logout')
+    return response.data
   },
-
-  
-  isAuthenticated(): boolean {
-    return !!getAccessToken()
-  },
-
+  isAuthenticated: () => {
+    const token = getAccessToken()
+    return !!token
+  }
+  // getProfile: async () => {
+  //   const response = await api.get('/auth/me')
+  //   return response.data
+  // },
 }
+// import api, { setAccessToken, getAccessToken } from '../core/axios'
+// import { LoginFormData } from '@/lib/validations/auth'
+// import { handleError } from './errors'
+// import { RegisterFormData } from '@/lib/validations/auth'
+
+
+// export const authService = {
+//   async login(credentials: LoginFormData): Promise<LoginResponse> {
+//     try {
+//       const response = await api.post<LoginResponse>('/auth/login', credentials)
+//       setAccessToken(response.data.data.access_token)
+//       return response.data
+//     } catch (error) {
+//       console.error('Login failed:', error)
+//       throw handleError(error)
+//     }
+//   },
+
+  
+//   async register(data: RegisterFormData): Promise<LoginResponse> {
+//     try {
+//       const response = await api.post<LoginResponse>('/auth/register', data)
+//       setAccessToken(response.data.data.access_token)
+//       return response.data
+//     } catch (error) {
+//       console.error('Registration failed:', error)
+//       throw handleError(error)
+//     }
+//   },
+  
+//   async logout(): Promise<void> {
+//     try {
+//       await api.post('/auth/logout')
+//       setAccessToken(null)
+//     } catch (error) {
+//       console.error('Logout error:', error)
+//       setAccessToken(null)
+//       throw handleError(error)
+//     }
+//   },
+
+//   async getCurrentUser(): Promise<User> {
+//     try {
+//       const response = await api.get<{ success: true; data: User }>('/auth/me')
+//       console.log('User fetched:', response.data.data.email)
+
+//       return response.data.data
+//     } catch (error) {
+//       console.error('Fetch user failed:', error)
+//       throw handleError(error)
+//     }
+//   },
+
+  
+//   isAuthenticated(): boolean {
+//     return !!getAccessToken()
+//   },
+
+// }

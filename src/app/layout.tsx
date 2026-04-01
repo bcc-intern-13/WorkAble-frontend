@@ -3,6 +3,7 @@ import { poppins } from "@/shared/utils/font";
 import { inter } from "@/shared/utils/font";
 import "@/styles/globals.css"
 import Script from "next/script";
+import { ToastProvider } from "@/shared/context/ToastContext";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -18,10 +19,10 @@ export default function RootLayout({
 
     <html lang="en">
       <body
-        className={`${poppins.variable} ${inter.variable}   antialiased`}
+        className={`${poppins.variable} ${inter.variable}  antialiased`}
       >
         <Script src="https://cdn.userway.org/widget.js" data-account="nxbubKAjQO" strategy="afterInteractive"/>
-        {children}
+        <ToastProvider>{children}</ToastProvider>
       </body>
     </html>
   );

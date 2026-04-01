@@ -1,55 +1,83 @@
-'use client'
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { authService, } from "@/api/services/auth";
+import { LoginPayload, RegisterPayload, User } from "@/shared/types/auth";
+import { setAccessToken } from "@/api/core/axios";
 
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { authService, type User } from '@/api/services/auth'
-
-export function useAuth() {
+export const useAuth = () => {
   const router = useRouter()
   const [user, setUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [Loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    checkAuth()
-  }, [])
-
-  const checkAuth = async () => {
+  const login = async (payload: LoginPayload) => {
+    setLoading(true)
+    setError(null)
     try {
-      if (!authService.isAuthenticated()) {
-        setLoading(false)
-        return
+      const response = await authService.login(payload)
+
+      if (response.error || !response.data) {
+        const errorMsg = response.message || "Login failed";
+        throw new Error(errorMsg);
       }
 
-      const currentUser = await authService.getCurrentUser()
-      setUser(currentUser)
-      setIsAuthenticated(true)
+      setAccessToken(response.access_token)
+
+      const userData = response.data.user;
+      setUser(userData || null);
     } catch (error) {
-      console.error('Auth check failed:', error)
       setUser(null)
-      setIsAuthenticated(false)
+      throw error
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const register = async (payload: RegisterPayload) => {
+    setLoading(true)
+    setError(null)
+    try {
+      const response = await authService.register(payload)
+
+      if (response.error || !response.data) {
+        const errorMsg = response.message || "Register failed";
+        throw new Error(errorMsg);
+      }
+
+      setAccessToken(response.access_token)
+
+      const userData = response.data.user;
+      setUser(userData || null);
+    } catch (error) {
+      setUser(null)
+      throw error
     } finally {
       setLoading(false)
     }
   }
 
   const logout = async () => {
+    setLoading(true)
+    setError(null)
     try {
       await authService.logout()
-      await fetch('/api/auth/session', { method: 'DELETE' })
+      setAccessToken(null)
       setUser(null)
-      setIsAuthenticated(false)
       router.push('/login')
     } catch (error) {
-      console.error('Logout failed:', error)
+      setUser(null)
+      throw error
+    } finally {
+      setLoading(false)
     }
   }
 
   return {
     user,
-    loading,
-    isAuthenticated,
-    logout,
-    checkAuth,
+    Loading,
+    error,
+    login,
+    register,
+    logout
   }
 }

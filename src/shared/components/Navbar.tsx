@@ -30,7 +30,7 @@ const Navbar = () => {
           <Image src={"/Logo.webp"} alt='LogoNav' width={500} height={500}/>
         </div>
         
-        <div>
+        <div className='hidden md:block'>
             <ul className='flex items-center justify-between gap-6 text-lg'>
                 <li>
                     <Link 

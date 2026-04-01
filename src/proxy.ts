@@ -3,12 +3,12 @@ import { getIronSession } from 'iron-session'
 import { sessionOptions, SessionData } from '@/lib/session'
 
 const PROTECTED_ROUTES = [
-  '/beranda',
+  // '/beranda',
   '/cariLowongan',
   '/lamaran',
   '/smartProfile',
   '/career-mapping',
-  '/onboarding',
+  // '/onboarding',
   '/payment',
 ]
 
@@ -63,12 +63,12 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/beranda/:path*',
+    // '/beranda/:path*',
     '/cariLowongan/:path*',
     '/lamaran/:path*',
     '/smartProfile/:path*',
     '/career-mapping/:path*',
-    '/onboarding/:path*',
+    // '/onboarding/:path*',
     '/payment/:path*',
     '/login',
     '/register',
