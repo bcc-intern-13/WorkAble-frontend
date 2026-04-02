@@ -18,7 +18,7 @@ export function Step1() {
   } = useForm<Step1Data>({
     resolver: zodResolver(step1Schema),
     defaultValues: {
-      fullName: data.fullName || '',
+      name: data.name || '',
     },
   })
 
@@ -41,12 +41,12 @@ export function Step1() {
         </p>
       </div>
 
-      <FormField label="" error={errors.fullName?.message} required>
+      <FormField label="" error={errors.name?.message} required>
         <Input
           type="text"
           placeholder="Masukkan namamu"
-          {...register('fullName')}
-          className={errors.fullName ? 'border-destructive placeholder:text-gray-400 rounded-xl py-4 shadow-none' : 'placeholder:text-gray-400 rounded-xl py-4 shadow-none'}
+          {...register('name')}
+          className={errors.name ? 'border-destructive placeholder:text-gray-400 rounded-xl py-4 shadow-none' : 'placeholder:text-gray-400 rounded-xl py-4 shadow-none'}
           autoFocus
         />
       </FormField>

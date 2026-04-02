@@ -19,7 +19,7 @@ const PUBLIC_ONLY_ROUTES = [
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  const authCookie = request.cookies.get('refresh_token') || request.cookies.get('access_token') 
+  const authCookie = request.cookies.get('refresh_token')
   
   const isLoggedIn = !!authCookie?.value
 
@@ -39,9 +39,9 @@ export function proxy(request: NextRequest) {
     return NextResponse.redirect(loginUrl)
   }
 
-  // if (isLoggedIn && isPublicOnlyRoute) {
-  //   return NextResponse.redirect(new URL('/beranda', request.url))
-  // }
+  if (isLoggedIn && isPublicOnlyRoute) {
+    return NextResponse.redirect(new URL('/beranda', request.url))
+  }
 
   return NextResponse.next()
 }

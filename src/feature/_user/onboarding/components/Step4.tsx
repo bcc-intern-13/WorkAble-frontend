@@ -29,13 +29,13 @@ export function Step4() {
     resolver: zodResolver(step4Schema),
     mode: "onChange",
     defaultValues: {
-      pendidikanTerakhir: data.pendidikanTerakhir || '',
+      education: data.education || '',
     },
   })
 
-  const selectedPendidikan = watch('pendidikanTerakhir')
+  const selectedEducation = watch('education')
 
-  const isValid = !!selectedPendidikan
+  const isValid = !!selectedEducation
 
   const onSubmit = (formData: Step4Data) => {
     updateData(formData)
@@ -56,7 +56,7 @@ export function Step4() {
         </p>
       </div>
 
-      <FormField error={errors.pendidikanTerakhir?.message}>
+      <FormField error={errors.education?.message}>
         <div className="grid gap-3">
           {PENDIDIKAN_OPTIONS.map((option) => (
             <button
@@ -64,13 +64,13 @@ export function Step4() {
               type="button"
               onClick={() =>
                 setValue(
-                    'pendidikanTerakhir',
-                    selectedPendidikan === option ? '' : option,
+                    'education',
+                    selectedEducation === option ? '' : option,
                     { shouldValidate: true }
                 )
                 }
               className={`p-4 rounded-lg border-2 transition-all font-medium ${
-                selectedPendidikan === option
+                selectedEducation === option
                   ? 'border-primary bg-primary/5 text-primary'
                   : 'border-gray-200 hover:border-gray-300 text-gray-700'
               }`}

@@ -2,7 +2,7 @@ import { X } from 'lucide-react'
 import { z } from 'zod'
 
 export const step1Schema = z.object({
-  fullName: z
+  name: z
     .string()
     .min(1, 'Nama lengkap wajib diisi')
     .min(3, 'Nama minimal 3 karakter')
@@ -21,44 +21,44 @@ export const step3Schema = z.object({
 })
 
 export const step4Schema = z.object({
-  pendidikanTerakhir: z.string().min(1, 'Pendidikan terakhir wajib dipilih'),
+  education: z.string().min(1, 'Pendidikan terakhir wajib dipilih'),
 })
 
 export const step5Schema = z.object({
-  bidangKerja: z.string().min(1, 'Bidang kerja wajib dipilih'),
+  job_field: z.string().min(1, 'Bidang kerja wajib dipilih'),
 })
 
 export const step6Schema = z.object({
-  tipePekerjaan: z.string().min(1, 'Tipe pekerjaan wajib dipilih'),
+  job_type: z.string().min(1, 'Tipe pekerjaan wajib dipilih'),
 })
 
 export const step7Schema = z.object({
-  statusKerja: z.string().min(1, 'Status kerja wajib dipilih'),
+  status: z.string().min(1, 'Status kerja wajib dipilih'),
 })
 
 export const step8Schema = z.object({
-  caraKomunikasi: z.string().min(1, 'Cara komunikasi wajib dipilih'),
+  communication_preference: z.string().min(1, 'Cara komunikasi wajib dipilih'),
 })
 
 export const step9Schema = z.object({
-  lingkunganKerja: z.array(z.string()).min(1, 'Pilih setidaknya satu opsi ideal buatmu'),
+  work_environment: z.array(z.string()).min(1, 'Pilih setidaknya satu opsi ideal buatmu'),
 })
 
 export const step10Schema = z.object({
-  bantuan: z.string().min(1, 'Bantuan wajib dipilih'),
+  special_needs: z.string().min(1, 'Bantuan wajib dipilih'),
 })
 
 export const completeOnboardingSchema = z.object({
-  fullName: step1Schema.shape.fullName,
+  name: step1Schema.shape.name,
   age: step2Schema.shape.age,
   city: step3Schema.shape.city,
-  pendidikanTerakhir: step4Schema.shape.pendidikanTerakhir,
-  bidangKerja: step5Schema.shape.bidangKerja,
-  tipePekerjaan: step6Schema.shape.tipePekerjaan,
-  statusKerja: step7Schema.shape.statusKerja,
-  caraKomunikasi: step8Schema.shape.caraKomunikasi,
-  lingkunganKerja: step9Schema.shape.lingkunganKerja,
-  bantuan: step10Schema.shape.bantuan,
+  education: step4Schema.shape.education,
+  job_field: step5Schema.shape.job_field,
+  job_type: step6Schema.shape.job_type,
+  status: step7Schema.shape.status,
+  communication_preference: step8Schema.shape.communication_preference,
+  work_environment: step9Schema.shape.work_environment,
+  special_needs: step10Schema.shape.special_needs,
 })
 
 export type Step1Data = z.infer<typeof step1Schema>

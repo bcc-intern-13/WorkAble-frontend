@@ -15,7 +15,7 @@ import { FormField } from '@/components/ui/molecules/form'
 
 import { loginSchema, type LoginFormData } from '@/lib/validations/auth'
 import { authService } from '@/api/services/auth'
-import { setAccessToken } from '@/api/core/axios'
+import { getAccessToken, setAccessToken } from '@/api/core/axios'
 import { useToast } from '@/shared/hooks/useToast'
 import { useAuth } from '@/feature/_user/auth/hooks/useAuth'
 import { Checkbox } from '@/components/ui/atoms/checkbox'
@@ -49,6 +49,8 @@ export default function LoginContainer() {
 
     try {
       await login(data)
+
+      console.log(getAccessToken)
 
       showToast({
         type: 'success',

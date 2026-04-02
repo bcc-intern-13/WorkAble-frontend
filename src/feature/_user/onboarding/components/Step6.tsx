@@ -28,11 +28,11 @@ export function Step6() {
     resolver: zodResolver(step6Schema),
     mode: "onChange",
     defaultValues: {
-      tipePekerjaan: data.tipePekerjaan || '',
+      job_type: data.job_type || '',
     },
   })
 
-  const selectedTipe = watch('tipePekerjaan')
+  const selectedTipe = watch('job_type')
 
   const isValid = !!selectedTipe
 
@@ -55,7 +55,7 @@ export function Step6() {
         </p>
       </div>
 
-      <FormField error={errors.tipePekerjaan?.message}>
+      <FormField error={errors.job_type?.message}>
         <div className="grid gap-3">
           {TIPE_OPTIONS.map((option) => (
             <button
@@ -63,7 +63,7 @@ export function Step6() {
               type="button"
               onClick={() =>
                 setValue(
-                    'tipePekerjaan',
+                    'job_type',
                     selectedTipe === option ? '' : option,
                     { shouldValidate: true }
                 )

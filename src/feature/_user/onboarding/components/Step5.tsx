@@ -32,11 +32,11 @@ export function Step5() {
     resolver: zodResolver(step5Schema),
     mode: "onChange",
     defaultValues: {
-      bidangKerja: data.bidangKerja || '',
+      job_field: data.job_field || '',
     },
   })
 
-  const selectedBidang = watch('bidangKerja')
+  const selectedBidang = watch('job_field')
 
   const isValid = !!selectedBidang
 
@@ -59,7 +59,7 @@ export function Step5() {
         </p>
       </div>
 
-      <FormField error={errors.bidangKerja?.message}>
+      <FormField error={errors.job_field?.message}>
         <div className="grid grid-cols-2 gap-3">
           {BIDANG_OPTIONS.map((option) => (
             <button
@@ -67,7 +67,7 @@ export function Step5() {
               type="button"
               onClick={() =>
                 setValue(
-                    'bidangKerja',
+                    'job_field',
                     selectedBidang === option ? '' : option,
                     { shouldValidate: true }
                 )

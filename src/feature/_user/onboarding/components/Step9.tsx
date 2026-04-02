@@ -27,20 +27,20 @@ export function Step9() {
     resolver: zodResolver(step9Schema),
     mode: "onChange",
     defaultValues: {
-      lingkunganKerja: data.lingkunganKerja || [],
+      work_environment: data.work_environment || [],
     },
   })
 
-  const selectedOptions = watch('lingkunganKerja')
+  const selectedOptions = watch('work_environment')
 
   const isValid = selectedOptions.length > 0;
 
   const toggleOption = (option: string) => {
     if (option === 'Tidak ada preferensi khusus') {
        if (selectedOptions.includes(option)) {
-           setValue('lingkunganKerja', [], { shouldValidate: true })
+           setValue('work_environment', [], { shouldValidate: true })
        } else {
-           setValue('lingkunganKerja', [option], { shouldValidate: true })
+           setValue('work_environment', [option], { shouldValidate: true })
        }
        return;
     }
@@ -53,7 +53,7 @@ export function Step9() {
       newOptions.push(option)
     }
     
-    setValue('lingkunganKerja', newOptions, { shouldValidate: true })
+    setValue('work_environment', newOptions, { shouldValidate: true })
   }
 
   const onSubmit = (formData: Step9Data) => {
@@ -75,7 +75,7 @@ export function Step9() {
         </p>
       </div>
 
-      <FormField error={errors.lingkunganKerja?.message}>
+      <FormField error={errors.work_environment?.message}>
         <div className="grid gap-3">
           {LINGKUNGAN_OPTIONS.map((option) => {
             const isSelected = selectedOptions.includes(option);

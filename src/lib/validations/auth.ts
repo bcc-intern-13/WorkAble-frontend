@@ -9,7 +9,7 @@ export const loginSchema = z.object({
     .string()
     .min(1, 'Password wajib diisi')
     .min(8, 'Password minimal 8 karakter'),
-  remember_me: z.boolean(),
+  remember_me: z.boolean('Ingat saya wajib dipilih'),
 })
 
 export const RegisterApiSchema = z.object({

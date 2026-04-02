@@ -6,7 +6,6 @@ import { step2Schema, type Step2Data } from '@/lib/validations/onboarding'
 import { useOnboardingStore } from '@/lib/stores/onboarding'
 import { Button } from '@/components/ui/atoms/button'
 import { FormField } from '@/components/ui/molecules/form'
-import { number } from 'zod'
 
 
 const AGE_OPTIONS = [

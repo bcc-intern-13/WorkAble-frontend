@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { CompleteOnboardingData } from '@/lib/validations/onboarding'
+import { onboardingService } from '@/api/services/onboarding'
 
 interface OnboardingStore {
   currentStep: number
@@ -15,6 +16,7 @@ interface OnboardingStore {
   
   isStepCompleted: (step: number) => boolean
   getProgress: () => number
+  submitOnboarding: () => Promise<{ success: boolean; error?: string }>
 }
 
 export const useOnboardingStore = create<OnboardingStore>()(
@@ -54,27 +56,39 @@ export const useOnboardingStore = create<OnboardingStore>()(
         
         switch (step) {
           case 1:
-            return !!data.fullName
+            return !!data.name
           case 2:
             return !!data.age
           case 3:
             return !!data.city
           case 4:
-            return !!data.pendidikanTerakhir
+            return !!data.education
           case 5:
-            return !!data.bidangKerja
+            return !!data.job_field
           case 6:
-            return !!data.tipePekerjaan
+            return !!data.job_type
           case 7:
-            return !!data.statusKerja
+            return !!data.status
           case 8:
-            return !!data.caraKomunikasi
+            return !!data.communication_preference
           case 9:
-            return !!(data.lingkunganKerja && data.lingkunganKerja.length > 0)
+            return !!(data.work_environment && data.work_environment.length > 0)
           case 10:
-            return !!data.bantuan
+            return !!data.special_needs
           default:
             return false
+        }
+      },
+
+      submitOnboarding: async () => {
+        const { data } = get()
+        try {
+          console.log(data)
+          await onboardingService.submit(data as CompleteOnboardingData)
+          get().resetOnboarding()
+          return { success: true }
+        } catch (error) {
+          return { success: false, error: error instanceof Error ? error.message : 'Gagal submit onboarding' }
         }
       },
       
@@ -82,6 +96,7 @@ export const useOnboardingStore = create<OnboardingStore>()(
         const { currentStep } = get()
         return (currentStep / 10) * 100
       },
+
     }),
     {
       name: 'onboarding-storage', 

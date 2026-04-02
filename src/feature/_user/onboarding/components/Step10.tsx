@@ -9,7 +9,7 @@ import { FormField } from '@/components/ui/molecules/form'
 import { number } from 'zod'
 
 
-const BANTUAN_OPTIONS = [
+const special_needs_OPTIONS = [
   'Alat bantu dengar / Ruang ramah tunarungu',
   'Akses kursi roda atau lift',
   'Software pembaca layar',
@@ -29,17 +29,17 @@ export function Step10() {
     resolver: zodResolver(step10Schema),
     mode: "onChange",
     defaultValues: {
-      bantuan: data.bantuan || '',
+      special_needs: data.special_needs || '',
     },
   })
 
-  const selectedStatus = watch('bantuan')
+  const selectedSpecialNeeds = watch('special_needs')
 
-  const isValid = !!selectedStatus
+  const isValid = !!selectedSpecialNeeds
 
   const onSubmit = (formData: Step10Data) => {
     updateData(formData)
-    nextStep()
+    useOnboardingStore.getState().submitOnboarding()
   }
 
   return (
@@ -56,21 +56,21 @@ export function Step10() {
         </p>
       </div>
 
-      <FormField error={errors.bantuan?.message}>
+      <FormField error={errors.special_needs?.message}>
         <div className="grid gap-3">
-          {BANTUAN_OPTIONS.map((option) => (
+          {special_needs_OPTIONS.map((option) => (
             <button
               key={option}
               type="button"
               onClick={() =>
                 setValue(
-                    'bantuan',
-                    selectedStatus === option ? '' : option,
+                    'special_needs',
+                    selectedSpecialNeeds === option ? '' : option,
                     { shouldValidate: true }
                 )
                 }
               className={`p-4 rounded-lg border-2 transition-all font-medium ${
-                selectedStatus === option
+                selectedSpecialNeeds === option
                   ? 'border-primary bg-primary/5 text-primary'
                   : 'border-gray-200 hover:border-gray-300 text-gray-700'
               }`}

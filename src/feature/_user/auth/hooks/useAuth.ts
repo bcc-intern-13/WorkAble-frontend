@@ -3,7 +3,6 @@ import { useRouter } from "next/navigation";
 import { authService } from "@/api/services/auth";
 import { LoginPayload, RegisterPayload, User } from "@/shared/types/auth";
 import { setAccessToken } from "@/api/core/axios";
-import Cookies from 'js-cookie';
 
 export const useAuth = () => {
   const router = useRouter()
@@ -24,7 +23,6 @@ export const useAuth = () => {
 
       setAccessToken(accessToken)
       setUser(userData);
-      Cookies.set('access_token', accessToken, { expires: 1, path: '/' });
 
       router.push('/beranda')
     } catch (err) {
@@ -58,8 +56,6 @@ export const useAuth = () => {
       await authService.logout()
       setAccessToken(null)
       setUser(null)
-      Cookies.remove('access_token')
-      Cookies.remove('refresh_token')
       router.push('/login')
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Logout gagal';

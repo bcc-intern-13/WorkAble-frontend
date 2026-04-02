@@ -30,13 +30,13 @@ export function Step8() {
     resolver: zodResolver(step8Schema),
     mode: "onChange",
     defaultValues: {
-      caraKomunikasi: data.caraKomunikasi || '',
+      communication_preference: data.communication_preference || '',
     },
   })
 
-  const selectedStatus = watch('caraKomunikasi')
+  const selectedCommunication = watch('communication_preference')
 
-  const isValid = !!selectedStatus
+  const isValid = !!selectedCommunication
 
   const onSubmit = (formData: Step8Data) => {
     updateData(formData)
@@ -57,7 +57,7 @@ export function Step8() {
         </p>
       </div>
 
-      <FormField error={errors.caraKomunikasi?.message}>
+      <FormField error={errors.communication_preference?.message}>
         <div className="grid gap-3">
           {KOMUNIKASI_OPTIONS.map((option) => (
             <button
@@ -65,13 +65,13 @@ export function Step8() {
               type="button"
               onClick={() =>
                 setValue(
-                    'caraKomunikasi',
-                    selectedStatus === option ? '' : option,
+                    'communication_preference',
+                    selectedCommunication === option ? '' : option,
                     { shouldValidate: true }
                 )
                 }
               className={`p-4 rounded-lg border-2 transition-all font-medium ${
-                selectedStatus === option
+                selectedCommunication === option
                   ? 'border-primary bg-primary/5 text-primary'
                   : 'border-gray-200 hover:border-gray-300 text-gray-700'
               }`}

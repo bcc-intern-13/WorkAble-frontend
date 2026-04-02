@@ -6,7 +6,7 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  withCredentials: false, 
+  withCredentials: true, 
 })
 
 let accessToken: string | null = null
@@ -41,13 +41,7 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        const response = await axios.post(
-          `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`,
-          {},
-          {
-            withCredentials: true,
-          }
-        )
+        const response = await axios.post(`/api/auth/refresh`, { withCredentials: true })
 
         const refreshToken = response.data.access_token;
         setAccessToken(refreshToken);

@@ -44,7 +44,7 @@ export function Step3() {
       <FormField label="" error={errors.city?.message} required>
         <Input
           type="text"
-          placeholder="Masukkan namamu"
+          placeholder="Masukkan nama kotamu"
           {...register('city')}
           className={errors.city ? 'border-destructive placeholder:text-gray-400 rounded-xl py-4 shadow-none' : 'placeholder:text-gray-400 rounded-xl py-4 shadow-none'}
           autoFocus

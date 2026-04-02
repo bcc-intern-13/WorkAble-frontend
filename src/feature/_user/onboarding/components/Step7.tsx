@@ -29,11 +29,11 @@ export function Step7() {
     resolver: zodResolver(step7Schema),
     mode: "onChange",
     defaultValues: {
-      statusKerja: data.statusKerja || '',
+      status: data.status || '',
     },
   })
 
-  const selectedStatus = watch('statusKerja')
+  const selectedStatus = watch('status')
 
   const isValid = !!selectedStatus
 
@@ -56,7 +56,7 @@ export function Step7() {
         </p>
       </div>
 
-      <FormField error={errors.statusKerja?.message}>
+      <FormField error={errors.status?.message}>
         <div className="grid gap-3">
           {STATUS_OPTIONS.map((option) => (
             <button
@@ -64,7 +64,7 @@ export function Step7() {
               type="button"
               onClick={() =>
                 setValue(
-                    'statusKerja',
+                    'status',
                     selectedStatus === option ? '' : option,
                     { shouldValidate: true }
                 )
