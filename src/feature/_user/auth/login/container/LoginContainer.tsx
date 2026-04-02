@@ -18,6 +18,7 @@ import { authService } from '@/api/services/auth'
 import { setAccessToken } from '@/api/core/axios'
 import { useToast } from '@/shared/hooks/useToast'
 import { useAuth } from '@/feature/_user/auth/hooks/useAuth'
+import { Checkbox } from '@/components/ui/atoms/checkbox'
 
 export default function LoginContainer() {
   const { login } = useAuth();
@@ -31,6 +32,8 @@ export default function LoginContainer() {
   const {
     register,
     handleSubmit,
+    setValue,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -168,13 +171,34 @@ export default function LoginContainer() {
           </div>
         </FormField>
 
-        <div className="flex justify-end">
-          <Link
-            href="/forgot-password"
-            className="caption-semibold text-secondary hover:text-primary transition-colors"
-          >
-            Lupa Password?
-          </Link>
+        <div className='flex items-center justify-between'>
+              <FormField error={errors.remember_me?.message}>
+                <div className="flex items-start gap-2">
+                  <Checkbox
+                    id="remember_me"
+                    checked={watch('remember_me')}
+                    onCheckedChange={(checked) =>
+                      setValue('remember_me', checked as boolean)
+                    }
+                    className={errors.remember_me ? 'border-destructive' : 'border border-muted-foreground cursor-pointer'}
+                  />
+                  <label
+                    htmlFor="remember_me"
+                    className="caption-regular text-muted-foreground leading-tight cursor-pointer"
+                  >
+                    Ingat saya
+                  </label>
+                </div>
+              </FormField>
+
+              <div className="flex justify-end">
+                <Link
+                  href="/forgot-password"
+                  className="caption-semibold text-secondary hover:text-primary transition-colors"
+                >
+                  Lupa Password?
+                </Link>
+              </div>
         </div>
 
         <Button
